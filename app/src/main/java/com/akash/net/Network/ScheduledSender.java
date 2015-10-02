@@ -1,6 +1,8 @@
 package com.akash.net.Network;
 
 import android.hardware.Sensor;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.akash.net.Model.Sensors;
@@ -11,33 +13,33 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.TimerTask;
 
 /**
  * Created by akash on 1/10/15.
  */
-public class ScheduledSender implements Runnable{
+public class ScheduledSender extends TimerTask{
 
     private Sensors mSensors;
     private String mAddress;
-    private ScheduledSenderInterface mDataInterface;
+    private Runnable mPostUIRunnable;
 
-    public ScheduledSender(String address, ScheduledSenderInterface postRun, Sensors sensors ){
+    public ScheduledSender(String address,  Runnable r, Sensors sensors ){
         mAddress = address;
-        mDataInterface = postRun;
+        mPostUIRunnable = r;
         mSensors = sensors;
     }
 
     @Override
     public void run() {
-        String msg = mDataInterface.preRun();
+        Handler handler = new Handler(Looper.getMainLooper());
+        String msg = mSensors.getAllSensorData();
         Log.w("APP", msg);
-        mDataInterface.postRun(msg);
+        handler.post(mPostUIRunnable);
 
-
-//
-//        if (!mAddress.isEmpty()) {
-//            send(msg);
-//        }
+        if (!mAddress.isEmpty()) {
+            send(msg);
+        }
     }
 
     void send(String msg)

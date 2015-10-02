@@ -11,7 +11,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".Activity.HomeActivity"
-            android:label="CUBOID" >
+            android:label="Cuboid" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -20,13 +20,12 @@ import java.util.ArrayList;
 public class HomeActivity extends ActionBarActivity implements View.OnClickListener {
 
     private ArrayList<Integer> sensorList  = new ArrayList<>();
-//    private ArrayList<Integer> sensorCBId = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        LinearLayout featuresTable = (LinearLayout) findViewById(R.id.sensor_list);
+        LinearLayout availableSensors = (LinearLayout) findViewById(R.id.sensor_list);
 
         SensorManager sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         for (Sensor sensor : sensorManager.getSensorList(Sensor.TYPE_ALL)){
@@ -34,14 +33,15 @@ public class HomeActivity extends ActionBarActivity implements View.OnClickListe
             CheckBox sensorCheckBox = new CheckBox(this);
             sensorCheckBox.setText(sensor.getName());
             sensorCheckBox.setId(sensor.getType());
-            sensorCheckBox.setPadding(5,5,5,5);
-            featuresTable.addView(sensorCheckBox);
+            sensorCheckBox.setTextAppearance(this, R.style.Base_TextAppearance_AppCompat_Medium);
+            sensorCheckBox.setPadding(5, 5, 5, 5);
+            availableSensors.addView(sensorCheckBox);
 
             sensorList.add(sensor.getType());
-//            sensorCBId.add(sensorCheckBox.getId());
         }
 
         findViewById(R.id.send_button).setOnClickListener(this);
+        findViewById(R.id.reset_button).setOnClickListener(this);
     }
 
 
@@ -68,26 +68,35 @@ public class HomeActivity extends ActionBarActivity implements View.OnClickListe
         if (id == R.id.send_button)
         {
             String address = ((EditText) findViewById(R.id.address_box)).getText().toString();
+            String delay = ((EditText) findViewById(R.id.time)).getText().toString();
+            long interval = 500;
+            if (!delay.isEmpty())
+                interval = Long.parseLong(delay);
 
-            if (!address.isEmpty())
-            {
-                Intent intent = new Intent(HomeActivity.this, DataTransfer.class);
-                ArrayList<Integer> sensorsName = new ArrayList<>();
+            Intent intent = new Intent(HomeActivity.this, DataTransfer.class);
+            ArrayList<Integer> sensorsName = new ArrayList<>();
 
-//                int i = 0;
-//                Log.w("CUBOID", sensorCBId.toString());
-                for (int cbid : sensorList){
-                    CheckBox cb = ((CheckBox) findViewById(cbid));
-                    if (cb.isChecked()) {
-                        sensorsName.add(cbid);
-                        Log.w("CUBOID", cb.getText().toString());
-                    }
-//                    i++;
+            for (int cbid : sensorList){
+                CheckBox cb = ((CheckBox) findViewById(cbid));
+                if (cb.isChecked()) {
+                    sensorsName.add(cbid);
+                    Log.w("CUBOID", cb.getText().toString());
                 }
+            }
 
-                intent.putExtra("SENSORS", sensorsName);
-                intent.putExtra("ADDR", address);
-                startActivity(intent);
+            intent.putExtra("SENSORS", sensorsName);
+            intent.putExtra("TIME", interval);
+            intent.putExtra("ADDR", address);
+            startActivity(intent);
+
+        }
+
+        if(id == R.id.reset_button){
+            ((EditText) findViewById(R.id.address_box)).setText("");
+            ((EditText) findViewById(R.id.time)).setText("");
+
+            for (int cbid : sensorList){
+                ((CheckBox) findViewById(cbid)).setChecked(false);
             }
         }
     }

@@ -7,11 +7,7 @@
         <item name="colorPrimary">@color/my_primary</item>
         <item name="colorPrimaryDark">@color/my_primary_dark</item>
         <item name="colorAccent">@color/my_accent</item>
-        <item name="colorButtonNormal">@color/my_accent</item>
     </style>
 
-    <style name="ButtonStyle" parent="@android:style/Widget.Button">
-        <item name="colorButtonNormal">@color/my_accent</item>
-    </style>
 
 </resources>

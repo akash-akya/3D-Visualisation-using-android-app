@@ -7,17 +7,19 @@ import android.hardware.SensorManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 /**
  * Created by akash on 1/10/15.
  */
 public class Sensors implements SensorEventListener{
-    private HashMap<Sensor,ArrayList<Float>> mSensorList;
-    private ArrayList<Sensor> mAvailableSensorList;
+    private HashMap<Integer,ArrayList<Float>> mSensorList;
+    private ArrayList<Integer> mAvailableSensorList;
     private SensorManager mSensorManager;
 
-    public Sensors(ArrayList<Sensor> availableSensorList, SensorManager sensorManager)
+    public Sensors(ArrayList<Integer> availableSensorList, SensorManager sensorManager)
     {
         mAvailableSensorList = availableSensorList;
         mSensorList = new HashMap<>();
@@ -33,15 +35,15 @@ public class Sensors implements SensorEventListener{
         {
             values.add(value);
         }
-        mSensorList.put(event.sensor, values);
+        mSensorList.put(event.sensor.getType(), values);
     }
 
-    public String getSensorData(Sensor s)
+    public String getSensorData(int type)
     {
         String data = "";
-        for (Float value : mSensorList.get(s))
+        for (Float value : mSensorList.get(type))
         {
-            data += value;
+            data += " " + value;
         }
         return data;
     }
@@ -49,10 +51,11 @@ public class Sensors implements SensorEventListener{
     public String getAllSensorData()
     {
         String allData = "";
-        Set set = mSensorList.entrySet();
-        for (Object sensor : set) {
-            allData += getSensorData((Sensor)sensor);
+        for (Map.Entry<Integer, ArrayList<Float>> entry : mSensorList.entrySet())
+        {
+            allData += entry.getKey()+ " - " + entry.getValue();
         }
+
         return  allData;
     }
 
@@ -64,9 +67,9 @@ public class Sensors implements SensorEventListener{
 
     public void registerListener() {
 //        Set set = mAvailableSensorList.entrySet();
-        for (Sensor aSet : mAvailableSensorList) {
-            this.mSensorList.put((Sensor)aSet, new ArrayList<Float>());
-            mSensorManager.registerListener(this, (Sensor)aSet, SensorManager.SENSOR_DELAY_NORMAL);
+        for (int aSet : mAvailableSensorList) {
+            this.mSensorList.put(aSet, new ArrayList<Float>());
+            mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(aSet), SensorManager.SENSOR_DELAY_NORMAL);
         }
     }
 
