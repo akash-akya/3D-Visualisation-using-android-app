@@ -14,10 +14,22 @@
         android:layout_gravity="center_vertical"
         android:hint="IP address" />
 
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/sensor_list"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:padding="10dp">
+
+    </LinearLayout>
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="set"
+        android:padding="15dp"
+        android:text="send"
         android:id="@+id/send_button"
         android:layout_gravity="center_horizontal" />
+
 </LinearLayout>
